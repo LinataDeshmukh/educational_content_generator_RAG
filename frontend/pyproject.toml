@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "rag-edu-generator-frontend"
+version = "0.1.0"
+description = "Streamlit frontend for RAG-powered educational content generator"
+authors = ["Developer"]
+readme = "README.md"
+packages = [{include = "streamlit_frontend"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+streamlit = "^1.28.0"
+requests = "^2.31.0"
+httpx = "^0.25.0"
+python-dotenv = "^1.0.0"
+matplotlib = "^3.8.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+ruff = "^0.1.6"
+
+[tool.poetry.scripts]
+frontend = "streamlit_frontend.__main__:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
