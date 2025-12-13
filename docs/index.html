@@ -3,39 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAG-Powered Educational Content Generator | Portfolio</title>
+    <meta name="description" content="Learnify - RAG-Powered Educational Content Generator with Adaptive Learning. Transform PDFs into interactive learning experiences using AI.">
+    <title>Learnify | RAG-Powered Educational Content Generator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="container">
             <div class="nav-brand">
-                <h1>📚 RAG Educational Generator</h1>
+                <div class="logo">
+                    <span class="logo-icon">📚</span>
+                    <span class="logo-text">Learnify</span>
+                </div>
             </div>
-            <ul class="nav-links">
+            <ul class="nav-links" id="navLinks">
                 <li><a href="#overview">Overview</a></li>
                 <li><a href="#features">Features</a></li>
                 <li><a href="#tech-stack">Tech Stack</a></li>
                 <li><a href="#architecture">Architecture</a></li>
                 <li><a href="#highlights">Highlights</a></li>
-                <li><a href="#demo">Demo</a></li>
+                <li><a href="#demo" class="nav-cta">Try Demo</a></li>
             </ul>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero">
+        <div class="hero-background">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
+            <div class="gradient-orb orb-3"></div>
+        </div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">RAG-Powered Educational Content Generator</h1>
-                <p class="hero-subtitle">An intelligent system that transforms PDF educational materials into interactive learning experiences using Retrieval-Augmented Generation (RAG), Q-Learning, and Thompson Sampling.</p>
+                <div class="hero-badge">
+                    <span class="badge-icon">✨</span>
+                    <span>AI-Powered Learning Platform</span>
+                </div>
+                <h1 class="hero-title">
+                    Transform PDFs into
+                    <span class="gradient-text">Interactive Learning</span>
+                    Experiences
+                </h1>
+                <p class="hero-subtitle">
+                    Learnify leverages <strong>Retrieval-Augmented Generation (RAG)</strong>, 
+                    <strong>Q-Learning</strong>, and <strong>Thompson Sampling</strong> to create 
+                    personalized educational experiences. Upload PDFs, chat with documents, 
+                    generate adaptive quizzes, and track your learning progress with comprehensive analytics.
+                </p>
                 <div class="hero-buttons">
-                    <a href="#demo" class="btn btn-primary">View Demo</a>
-                    <a href="https://github.com/yourusername/RAG-Powered-Educational-Content-Generator" class="btn btn-secondary" target="_blank">View Code on GitHub</a>
+                    <a href="https://github.com/LinataDeshmukh/educational_content_generator_RAG" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                        </svg>
+                        View on GitHub
+                    </a>
+                    <a href="#demo" class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        See Live Demo
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Core Features</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">ML Algorithms</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">15+</div>
+                        <div class="stat-label">Technologies</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">300</div>
+                        <div class="stat-label">Max Pages/PDF</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -44,38 +99,34 @@
     <!-- Overview Section -->
     <section id="overview" class="section">
         <div class="container">
-            <h2 class="section-title">Project Overview</h2>
-            <div class="overview-content">
-                <div class="overview-text">
-                    <p>
-                        This project is a comprehensive educational platform that leverages <strong>Retrieval-Augmented Generation (RAG)</strong> 
-                        to help students and educators interact with PDF materials in innovative ways. The system processes uploaded PDFs, 
-                        extracts and indexes content using vector embeddings, and enables users to chat with the material, generate quizzes, 
-                        summaries, and flashcards.
-                    </p>
-                    <p>
-                        The standout feature is an <strong>adaptive competitive quiz system</strong> that uses <strong>Q-Learning</strong> and 
-                        <strong>Thompson Sampling</strong> algorithms to dynamically adjust question difficulty based on user performance, 
-                        creating a personalized learning experience.
-                    </p>
+            <div class="section-header">
+                <span class="section-badge">About the Project</span>
+                <h2 class="section-title">Revolutionizing Educational Content Interaction</h2>
+                <p class="section-description">
+                    Learnify is a full-stack educational platform that transforms static PDF documents 
+                    into dynamic, interactive learning experiences using cutting-edge AI technologies.
+                </p>
+            </div>
+            <div class="overview-grid">
+                <div class="overview-card">
+                    <div class="card-icon">🎯</div>
+                    <h3>RAG-Powered Intelligence</h3>
+                    <p>Advanced Retrieval-Augmented Generation system with systematic prompting, context management, and intelligent fallback mechanisms for accurate, context-aware responses.</p>
                 </div>
-                <div class="overview-stats">
-                    <div class="stat-card">
-                        <div class="stat-number">6</div>
-                        <div class="stat-label">Core Features</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">10+</div>
-                        <div class="stat-label">Technologies</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">300</div>
-                        <div class="stat-label">Max Pages/PDF</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">2</div>
-                        <div class="stat-label">ML Algorithms</div>
-                    </div>
+                <div class="overview-card">
+                    <div class="card-icon">🤖</div>
+                    <h3>Adaptive Learning</h3>
+                    <p>Q-Learning and Thompson Sampling algorithms dynamically adjust quiz difficulty in real-time based on user performance, creating personalized learning paths.</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Comprehensive Analytics</h3>
+                    <p>Visual statistics, progress tracking, and performance analytics with interactive charts and progress bars to help users understand their learning journey.</p>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Modern Tech Stack</h3>
+                    <p>Built with Next.js, FastAPI, Pinecone, and OpenAI. Features auto-creation of vector databases, dependency injection, and clean architecture.</p>
                 </div>
             </div>
         </div>
@@ -84,37 +135,88 @@
     <!-- Features Section -->
     <section id="features" class="section section-alt">
         <div class="container">
-            <h2 class="section-title">Key Features</h2>
+            <div class="section-header">
+                <span class="section-badge">Key Features</span>
+                <h2 class="section-title">Everything You Need for Effective Learning</h2>
+            </div>
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📄</div>
-                    <h3>PDF Upload & Processing</h3>
-                    <p>Upload and index PDF documents up to 300 pages. Supports multiple file uploads with intelligent text extraction and chunking.</p>
+                    <div class="feature-header">
+                        <div class="feature-icon">📄</div>
+                        <h3>PDF Upload & Processing</h3>
+                    </div>
+                    <p>Upload and index multiple PDF documents (up to 300 pages total). Automatic Pinecone index creation, intelligent text extraction, and hybrid chunking strategy for optimal retrieval.</p>
+                    <ul class="feature-list">
+                        <li>Multi-file support</li>
+                        <li>Auto-index creation</li>
+                        <li>Filename preservation</li>
+                        <li>Namespace isolation</li>
+                    </ul>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h3>RAG-Powered Chat</h3>
-                    <p>Ask questions about uploaded material with intelligent fallback. Uses systematic prompting strategies and context management for accurate responses.</p>
+                    <div class="feature-header">
+                        <div class="feature-icon">💬</div>
+                        <h3>RAG-Powered Chat</h3>
+                    </div>
+                    <p>Ask questions about uploaded material with intelligent context retrieval. Systematic prompting strategies, question type detection, and source citation for accurate, educational responses.</p>
+                    <ul class="feature-list">
+                        <li>Question type detection</li>
+                        <li>Context-aware responses</li>
+                        <li>Source citation</li>
+                        <li>Intelligent fallback</li>
+                    </ul>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🏆</div>
-                    <h3>Adaptive Competitive Quiz</h3>
-                    <p>AI-powered quiz system using Q-Learning and Thompson Sampling. Difficulty adapts in real-time based on performance with reward-based learning.</p>
+                    <div class="feature-header">
+                        <div class="feature-icon">🏆</div>
+                        <h3>Adaptive Competitive Quiz</h3>
+                    </div>
+                    <p>AI-powered quiz system using Q-Learning and Thompson Sampling. Real-time difficulty adjustment with 30 questions, comprehensive statistics, and visual performance analytics.</p>
+                    <ul class="feature-list">
+                        <li>Q-Learning algorithm</li>
+                        <li>Thompson Sampling</li>
+                        <li>Real-time adaptation</li>
+                        <li>Visual analytics</li>
+                    </ul>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📝</div>
-                    <h3>Quiz Generation</h3>
-                    <p>Generate contextual quizzes with multiple choice and short answer questions. Includes hints, explanations, and LLM-based answer evaluation.</p>
+                    <div class="feature-header">
+                        <div class="feature-icon">📝</div>
+                        <h3>Quiz Generation</h3>
+                    </div>
+                    <p>Generate contextual quizzes with multiple choice and short answer questions. Includes hints, explanations, LLM-based evaluation, and detailed statistical analysis with visual charts.</p>
+                    <ul class="feature-list">
+                        <li>Multiple question types</li>
+                        <li>Hints & explanations</li>
+                        <li>LLM evaluation</li>
+                        <li>Performance analytics</li>
+                    </ul>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📄</div>
-                    <h3>Summary Generation</h3>
-                    <p>Create comprehensive summaries of varying lengths (short, medium, long) tailored to the document content.</p>
+                    <div class="feature-header">
+                        <div class="feature-icon">📄</div>
+                        <h3>Summary Generation</h3>
+                    </div>
+                    <p>Create comprehensive summaries of varying lengths (short, medium, long) tailored to document content. Context-aware generation with key topic highlighting.</p>
+                    <ul class="feature-list">
+                        <li>Multiple lengths</li>
+                        <li>Context-aware</li>
+                        <li>Key topics</li>
+                        <li>Structured output</li>
+                    </ul>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🎴</div>
-                    <h3>Flashcard Generation</h3>
-                    <p>Generate interactive flashcards for studying key concepts from the uploaded materials.</p>
+                    <div class="feature-header">
+                        <div class="feature-icon">🎴</div>
+                        <h3>Flashcard Generation</h3>
+                    </div>
+                    <p>Generate interactive flashcards for studying key concepts. Question-answer format with progress tracking and interactive study sessions.</p>
+                    <ul class="feature-list">
+                        <li>Key concept extraction</li>
+                        <li>Q&A format</li>
+                        <li>Interactive study</li>
+                        <li>Progress tracking</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -123,50 +225,65 @@
     <!-- Tech Stack Section -->
     <section id="tech-stack" class="section">
         <div class="container">
-            <h2 class="section-title">Technology Stack</h2>
-            <div class="tech-categories">
-                    <div class="tech-category">
-                    <h3>Backend</h3>
+            <div class="section-header">
+                <span class="section-badge">Technology Stack</span>
+                <h2 class="section-title">Built with Modern Technologies</h2>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <h3>Frontend</h3>
+                        <span class="tech-badge">Modern</span>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Next.js 14</span>
+                        <span class="tech-tag">React 18</span>
+                        <span class="tech-tag">TypeScript</span>
+                        <span class="tech-tag">Tailwind CSS</span>
+                        <span class="tech-tag">Zustand</span>
+                        <span class="tech-tag">Lucide Icons</span>
+                    </div>
+                </div>
+                <div class="tech-category">
+                    <div class="tech-category-header">
+                        <h3>Backend</h3>
+                        <span class="tech-badge">Robust</span>
+                    </div>
                     <div class="tech-tags">
                         <span class="tech-tag">FastAPI</span>
                         <span class="tech-tag">Python 3.11</span>
                         <span class="tech-tag">LlamaIndex</span>
-                        <span class="tech-tag">Pinecone</span>
-                        <span class="tech-tag">PyMuPDF</span>
-                        <span class="tech-tag">OpenAI API</span>
                         <span class="tech-tag">Pydantic</span>
                         <span class="tech-tag">Poetry</span>
+                        <span class="tech-tag">Uvicorn</span>
                     </div>
                 </div>
                 <div class="tech-category">
-                    <h3>Frontend</h3>
-                    <div class="tech-tags">
-                        <span class="tech-tag">Streamlit</span>
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">httpx</span>
-                        <span class="tech-tag">Matplotlib</span>
-                        <span class="tech-tag">Pandas</span>
-                        <span class="tech-tag">Poetry</span>
+                    <div class="tech-category-header">
+                        <h3>AI & ML</h3>
+                        <span class="tech-badge">Advanced</span>
                     </div>
-                </div>
-                <div class="tech-category">
-                    <h3>AI/ML</h3>
                     <div class="tech-tags">
+                        <span class="tech-tag">OpenAI GPT-4o-mini</span>
+                        <span class="tech-tag">text-embedding-3-small</span>
                         <span class="tech-tag">Q-Learning</span>
                         <span class="tech-tag">Thompson Sampling</span>
-                        <span class="tech-tag">RAG</span>
+                        <span class="tech-tag">RAG Pipeline</span>
                         <span class="tech-tag">Vector Embeddings</span>
-                        <span class="tech-tag">GPT-4 Turbo</span>
-                        <span class="tech-tag">text-embedding-3-small</span>
                     </div>
                 </div>
                 <div class="tech-category">
-                    <h3>Infrastructure</h3>
+                    <div class="tech-category-header">
+                        <h3>Infrastructure</h3>
+                        <span class="tech-badge">Scalable</span>
+                    </div>
                     <div class="tech-tags">
-                        <span class="tech-tag">Pinecone Vector DB</span>
+                        <span class="tech-tag">Pinecone 5.0</span>
+                        <span class="tech-tag">Auto-Index Creation</span>
                         <span class="tech-tag">Namespace Isolation</span>
                         <span class="tech-tag">RESTful API</span>
                         <span class="tech-tag">CORS</span>
+                        <span class="tech-tag">PyMuPDF</span>
                     </div>
                 </div>
             </div>
@@ -176,62 +293,102 @@
     <!-- Architecture Section -->
     <section id="architecture" class="section section-alt">
         <div class="container">
-            <h2 class="section-title">System Architecture</h2>
-            <div class="architecture-diagram">
+            <div class="section-header">
+                <span class="section-badge">System Architecture</span>
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-description">
+                    A clean, modular architecture with separation of concerns and scalable design patterns.
+                </p>
+            </div>
+            <div class="architecture-container">
                 <div class="arch-flow">
-                    <div class="arch-step">
-                        <div class="arch-icon">📄</div>
-                        <h4>PDF Upload</h4>
-                        <p>User uploads PDF(s)</p>
-                    </div>
-                    <div class="arch-arrow">→</div>
-                    <div class="arch-step">
-                        <div class="arch-icon">✂️</div>
-                        <h4>Text Extraction</h4>
-                        <p>PyMuPDF extracts text</p>
-                    </div>
-                    <div class="arch-arrow">→</div>
-                    <div class="arch-step">
-                        <div class="arch-icon">🔪</div>
-                        <h4>Chunking</h4>
-                        <p>Hybrid chunking strategy</p>
-                    </div>
-                    <div class="arch-arrow">→</div>
-                    <div class="arch-step">
-                        <div class="arch-icon">🧠</div>
-                        <h4>Embedding</h4>
-                        <p>OpenAI embeddings</p>
-                    </div>
-                    <div class="arch-arrow">→</div>
-                    <div class="arch-step">
-                        <div class="arch-icon">💾</div>
-                        <h4>Vector Store</h4>
-                        <p>Pinecone indexing</p>
+                    <h4 class="flow-title">Document Processing Pipeline</h4>
+                    <div class="arch-steps">
+                        <div class="arch-step">
+                            <div class="arch-step-icon">📄</div>
+                            <h5>PDF Upload</h5>
+                            <p>User uploads PDF(s)</p>
+                        </div>
+                        <div class="arch-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="arch-step">
+                            <div class="arch-step-icon">✂️</div>
+                            <h5>Text Extraction</h5>
+                            <p>PyMuPDF extracts text</p>
+                        </div>
+                        <div class="arch-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="arch-step">
+                            <div class="arch-step-icon">🔪</div>
+                            <h5>Hybrid Chunking</h5>
+                            <p>Semantic + page boundaries</p>
+                        </div>
+                        <div class="arch-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="arch-step">
+                            <div class="arch-step-icon">🧠</div>
+                            <h5>Embedding</h5>
+                            <p>OpenAI embeddings (1536D)</p>
+                        </div>
+                        <div class="arch-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="arch-step">
+                            <div class="arch-step-icon">💾</div>
+                            <h5>Vector Store</h5>
+                            <p>Pinecone indexing</p>
+                        </div>
                     </div>
                 </div>
                 <div class="arch-flow">
-                    <div class="arch-step">
-                        <div class="arch-icon">❓</div>
-                        <h4>User Query</h4>
-                        <p>Question/Request</p>
-                    </div>
-                    <div class="arch-arrow">→</div>
-                    <div class="arch-step">
-                        <div class="arch-icon">🔍</div>
-                        <h4>Retrieval</h4>
-                        <p>Semantic search</p>
-                    </div>
-                    <div class="arch-arrow">→</div>
-                    <div class="arch-step">
-                        <div class="arch-icon">🤖</div>
-                        <h4>Generation</h4>
-                        <p>LLM + Context</p>
-                    </div>
-                    <div class="arch-arrow">→</div>
-                    <div class="arch-step">
-                        <div class="arch-icon">📤</div>
-                        <h4>Response</h4>
-                        <p>Formatted output</p>
+                    <h4 class="flow-title">Query Processing Pipeline</h4>
+                    <div class="arch-steps">
+                        <div class="arch-step">
+                            <div class="arch-step-icon">❓</div>
+                            <h5>User Query</h5>
+                            <p>Question/Request</p>
+                        </div>
+                        <div class="arch-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="arch-step">
+                            <div class="arch-step-icon">🔍</div>
+                            <h5>Semantic Search</h5>
+                            <p>Vector similarity search</p>
+                        </div>
+                        <div class="arch-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="arch-step">
+                            <div class="arch-step-icon">🤖</div>
+                            <h5>LLM Generation</h5>
+                            <p>Context + Prompt</p>
+                        </div>
+                        <div class="arch-arrow">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </div>
+                        <div class="arch-step">
+                            <div class="arch-step-icon">📤</div>
+                            <h5>Response</h5>
+                            <p>Formatted output</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -241,28 +398,34 @@
     <!-- Highlights Section -->
     <section id="highlights" class="section">
         <div class="container">
-            <h2 class="section-title">Technical Highlights</h2>
+            <div class="section-header">
+                <span class="section-badge">Technical Highlights</span>
+                <h2 class="section-title">What Makes This Project Stand Out</h2>
+            </div>
             <div class="highlights-grid">
                 <div class="highlight-card">
-                    <h3>🎯 Prompt Engineering</h3>
+                    <div class="highlight-icon">🎯</div>
+                    <h3>Advanced Prompt Engineering</h3>
                     <ul>
-                        <li>Systematic prompting strategies with question-type detection</li>
+                        <li>Systematic prompting with 7-question type detection</li>
                         <li>Dynamic prompt generation based on query type</li>
-                        <li>Context management with token limits</li>
+                        <li>Intelligent context management with token limits</li>
                         <li>Response post-processing for better formatting</li>
                     </ul>
                 </div>
                 <div class="highlight-card">
-                    <h3>🔍 RAG Implementation</h3>
+                    <div class="highlight-icon">🔍</div>
+                    <h3>Production-Ready RAG</h3>
                     <ul>
-                        <li>Vector storage and retrieval with Pinecone</li>
+                        <li>Vector storage with Pinecone (auto-creation)</li>
                         <li>Hybrid chunking (semantic + page boundaries)</li>
-                        <li>Effective ranking and filtering mechanisms</li>
+                        <li>Multi-level ranking and filtering</li>
                         <li>Namespace-based document isolation</li>
                     </ul>
                 </div>
                 <div class="highlight-card">
-                    <h3>🤖 Adaptive Learning</h3>
+                    <div class="highlight-icon">🤖</div>
+                    <h3>Reinforcement Learning</h3>
                     <ul>
                         <li>Q-Learning for optimal difficulty selection</li>
                         <li>Thompson Sampling for exploration-exploitation</li>
@@ -271,12 +434,33 @@
                     </ul>
                 </div>
                 <div class="highlight-card">
-                    <h3>🏗️ System Design</h3>
+                    <div class="highlight-icon">🏗️</div>
+                    <h3>Clean Architecture</h3>
                     <ul>
-                        <li>Microservices architecture (Backend + Frontend)</li>
+                        <li>Dependency injection pattern</li>
+                        <li>Modular service architecture</li>
                         <li>RESTful API design</li>
-                        <li>Session-based document isolation</li>
                         <li>Comprehensive error handling</li>
+                    </ul>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon">📊</div>
+                    <h3>Visual Analytics</h3>
+                    <ul>
+                        <li>Interactive progress bars and charts</li>
+                        <li>Real-time performance tracking</li>
+                        <li>Difficulty distribution analysis</li>
+                        <li>Answer history visualization</li>
+                    </ul>
+                </div>
+                <div class="highlight-card">
+                    <div class="highlight-icon">⚡</div>
+                    <h3>Modern Frontend</h3>
+                    <ul>
+                        <li>Next.js with TypeScript</li>
+                        <li>Light/dark mode support</li>
+                        <li>Responsive design</li>
+                        <li>State management with Zustand</li>
                     </ul>
                 </div>
             </div>
@@ -286,49 +470,66 @@
     <!-- Demo Section -->
     <section id="demo" class="section section-alt">
         <div class="container">
-            <h2 class="section-title">Live Demo</h2>
-            <div class="demo-content">
-                <div class="demo-info">
-                    <h3>Try the Application</h3>
-                    <p>The application is deployed and ready to use. Upload a PDF, chat with it, generate quizzes, and experience the adaptive learning system.</p>
-                    <a href="https://your-app-url.onrender.com" class="btn btn-primary btn-large" target="_blank">🚀 Launch Application</a>
-                    <p class="demo-note">Note: Replace with your actual deployment URL</p>
+            <div class="section-header">
+                <span class="section-badge">Try It Out</span>
+                <h2 class="section-title">Experience Learnify</h2>
+                <p class="section-description">
+                    The application is ready to use. Upload a PDF, chat with it, generate quizzes, 
+                    and experience the adaptive learning system.
+                </p>
+            </div>
+            <div class="demo-container">
+                <div class="demo-card">
+                    <div class="demo-icon">🚀</div>
+                    <h3>Get Started</h3>
+                    <p>Clone the repository and follow the setup instructions to run Learnify locally.</p>
+                    <a href="https://github.com/LinataDeshmukh/educational_content_generator_RAG" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                        </svg>
+                        View Repository
+                    </a>
                 </div>
-                <div class="demo-features">
+                <div class="demo-features-list">
                     <h4>What You Can Do:</h4>
                     <ul>
-                        <li>✅ Upload PDF documents (up to 300 pages)</li>
-                        <li>✅ Chat with your documents using RAG</li>
-                        <li>✅ Generate adaptive competitive quizzes</li>
-                        <li>✅ Create regular quizzes with hints</li>
-                        <li>✅ Generate summaries and flashcards</li>
-                        <li>✅ Continue with previously uploaded documents</li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Upload PDF documents (up to 300 pages)
+                        </li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Chat with documents using RAG
+                        </li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Generate adaptive competitive quizzes
+                        </li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Create regular quizzes with hints
+                        </li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Generate summaries and flashcards
+                        </li>
+                        <li>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Track progress with visual analytics
+                        </li>
                     </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Project Details Section -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Project Details</h2>
-            <div class="details-grid">
-                <div class="detail-card">
-                    <h3>📊 Project Scope</h3>
-                    <p>Full-stack application with AI/ML integration, vector database, and adaptive learning algorithms. Built from scratch with clean architecture and best practices.</p>
-                </div>
-                <div class="detail-card">
-                    <h3>🎓 Learning Outcomes</h3>
-                    <p>Demonstrated expertise in RAG systems, reinforcement learning, prompt engineering, vector databases, API design, and full-stack development.</p>
-                </div>
-                <div class="detail-card">
-                    <h3>💡 Innovation</h3>
-                    <p>Combined RAG with adaptive learning algorithms (Q-Learning + Thompson Sampling) to create a personalized educational experience that adjusts to user performance.</p>
-                </div>
-                <div class="detail-card">
-                    <h3>🔧 Technical Challenges</h3>
-                    <p>Overcame namespace isolation, context window management, difficulty progression logic, and seamless integration of multiple AI services.</p>
                 </div>
             </div>
         </div>
@@ -339,10 +540,16 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
+                    <div class="footer-logo">
+                        <span class="logo-icon">📚</span>
+                        <span class="logo-text">Learnify</span>
+                    </div>
+                    <p>RAG-Powered Educational Content Generator with Adaptive Learning</p>
+                </div>
+                <div class="footer-section">
                     <h3>Project Links</h3>
                     <ul>
-                        <li><a href="https://github.com/yourusername/RAG-Powered-Educational-Content-Generator" target="_blank">GitHub Repository</a></li>
-                        <li><a href="#demo">Live Demo</a></li>
+                        <li><a href="https://github.com/LinataDeshmukh/educational_content_generator_RAG" target="_blank" rel="noopener noreferrer">GitHub Repository</a></li>
                         <li><a href="../project_documentation/DELIVERABLES.md" target="_blank">Project Deliverables</a></li>
                         <li><a href="../README.md" target="_blank">Project README</a></li>
                         <li><a href="../SETUP_STEPS.md" target="_blank">Setup Instructions</a></li>
@@ -350,17 +557,16 @@
                 </div>
                 <div class="footer-section">
                     <h3>Technologies</h3>
-                    <p>FastAPI • Streamlit • LlamaIndex • Pinecone • OpenAI • Q-Learning • Thompson Sampling • Poetry</p>
+                    <p>Next.js • FastAPI • Pinecone • OpenAI • Q-Learning • Thompson Sampling • TypeScript • Python</p>
                 </div>
                 <div class="footer-section">
-                    <h3>Contact</h3>
-                    <p>Built by: Linata Deshmukh & Pranesh Kannan</p>
-                    <p>Semester 4 coursework project</p>
+                    <h3>Built By</h3>
+                    <p><strong>Linata Deshmukh</strong> & <strong>Pranesh Kannan</strong></p>
                     <p>Educational project showcasing RAG and adaptive learning</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 RAG Educational Content Generator. Built by Linata Deshmukh & Pranesh Kannan with ❤️ for education.</p>
+                <p>&copy; 2024 Learnify. Built with ❤️ for education.</p>
             </div>
         </div>
     </footer>
@@ -368,4 +574,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-

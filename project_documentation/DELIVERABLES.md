@@ -234,15 +234,15 @@ A comprehensive platform that enables students and educators to:
 ┌─────────────────────────────────────────────────────────────┐
 │                    Frontend Layer                           │
 │  ┌──────────────────────┐  ┌──────────────────────────┐     │
-│  │  Next.js (Recommended)│  │  Streamlit (Legacy)      │     │
-│  │  - React/TypeScript  │  │  - Python-based UI      │     │
-│  │  - Tailwind CSS      │  │  - Rapid prototyping    │     │
-│  │  - Zustand State     │  │  - Session management   │     │
+│  │  Next.js (Recommended)│  │  Streamlit (Legacy)     │     │
+│  │  - React/TypeScript  │  │  - Python-based UI       │     │
+│  │  - Tailwind CSS      │  │  - Rapid prototyping     │     │
+│  │  - Zustand State     │  │  - Session management    │     │
 │  └──────────────────────┘  └──────────────────────────┘     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────────┐   │
-│  │  Upload  │  │   Chat   │  │   Quiz   │  │Competitive│   │
+│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌───────────┐   │
+│  │  Upload  │  │   Chat   │  │   Quiz    │  │Competitive│   │
 │  │   PDF    │  │   Q&A    │  │+ Analytics│  │   Quiz    │   │
-│  └──────────┘  └──────────┘  └──────────┘  └───────────┘   │
+│  └──────────┘  └──────────┘  └───────────┘  └───────────┘   │
 │  ┌──────────┐  ┌──────────┐                                 │
 │  │ Summary  │  │Flashcards│                                 │
 │  └──────────┘  └──────────┘                                 │
@@ -1293,7 +1293,7 @@ educational_content_generator_RAG/
 - RESTful API
 - Modern, professional web interface with visual analytics
 
-### ⚠️ GitHub Pages for Hosting Project Web Page
+### GitHub Pages for Hosting Project Web Page
 
 **Status: Ready for Deployment**
 - Portfolio website in `docs/` folder
@@ -1319,6 +1319,9 @@ The project is production-ready, well-documented, and demonstrates best practice
 **Project Repository:** https://github.com/LinataDeshmukh/educational_content_generator_RAG.git
 
 **Live Demo:** [Deployment URL if available]
+BACKEND_API_URL=http://localhost:8000
+The Next.js frontend runs on http://localhost:3000
+The Streamlit frontend runs on http://localhost:8501
 
 **Key Updates:**
 - ✅ Next.js frontend with modern UI
