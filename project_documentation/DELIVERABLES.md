@@ -1198,6 +1198,8 @@ educational_content_generator_RAG/
 #### Web Page Design and Content
 
 ✅ **Portfolio Website:**
+Webpage
+https://github.com/LinataDeshmukh/educational_content_generator_RAG
 - `docs/` folder with HTML/CSS/JS
 - Project showcase
 - Feature highlights
@@ -1298,8 +1300,7 @@ educational_content_generator_RAG/
 **Status: Ready for Deployment**
 - Portfolio website in `docs/` folder
 - Can be deployed to GitHub Pages
-- Currently running locally
-- Fully deployable
+- Fully deployed
 
 ---
 
@@ -1319,9 +1320,12 @@ The project is production-ready, well-documented, and demonstrates best practice
 **Project Repository:** https://github.com/LinataDeshmukh/educational_content_generator_RAG.git
 
 **Live Demo:** [Deployment URL if available]
-BACKEND_API_URL=http://localhost:8000
-The Next.js frontend runs on http://localhost:3000
-The Streamlit frontend runs on http://localhost:8501
+- BACKEND_API_URL=http://localhost:8000
+- The Next.js frontend runs on http://localhost:3000
+- The Streamlit frontend runs on http://localhost:8501
+
+**Portfolio Website:**
+https://linatadeshmukh.github.io/educational_content_generator_RAG/
 
 **Key Updates:**
 - ✅ Next.js frontend with modern UI
