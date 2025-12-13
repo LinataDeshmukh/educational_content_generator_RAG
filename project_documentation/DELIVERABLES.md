@@ -53,7 +53,7 @@ This project implements **both** required components:
   - Response format requirements
   - Quality expectations
 
-**Location:** `backend/src/rag_edu_generator/services/rag_service.py`
+**Location:** `backend/fastapi_backend/services/rag_service.py`
 
 **Key Features:**
 - Systematic question analysis before processing
@@ -70,7 +70,7 @@ This project implements **both** required components:
 - **Context Window Optimization**: Intelligent truncation preserving most relevant information
 - **Chunk Selection**: Retrieves 2x needed chunks, filters, then selects top-k
 
-**Location:** `backend/src/rag_edu_generator/services/rag_service.py`
+**Location:** `backend/fastapi_backend/services/rag_service.py`
 
 **Key Features:**
 - Prevents token overflow
@@ -89,8 +89,9 @@ This project implements **both** required components:
 - **PDF Upload**: Multi-file support with namespace isolation
 
 **Location:** 
-- Backend: `backend/src/rag_edu_generator/api/routes/`
-- Frontend: `frontend/src/streamlit_app/pages/`
+- Backend: `backend/fastapi_backend/routers/`
+- Frontend (Next.js): `frontend_v2/app/`
+- Frontend (Streamlit): `frontend/streamlit_frontend/pages/`
 
 **Key Features:**
 - Distinct interaction patterns for each feature
@@ -111,8 +112,8 @@ This project implements **both** required components:
 - **Error Recovery**: Graceful degradation when services fail
 
 **Location:**
-- `backend/src/rag_edu_generator/utils/errors.py`
-- `backend/src/rag_edu_generator/api/middleware.py`
+- `backend/fastapi_backend/utils/errors.py`
+- `backend/fastapi_backend/middleware.py`
 
 **Key Features:**
 - User-friendly error messages
@@ -133,7 +134,13 @@ This project implements **both** required components:
 - **Document Persistence**: Continue with existing documents to save API credits
 - **Metadata Preservation**: Filenames, page numbers, chunk indices stored
 
-**Location:** `backend/src/rag_edu_generator/services/vector_store.py`
+**Location:** `backend/fastapi_backend/services/vector_store.py`
+
+**Key Feature - Auto-Creation:**
+- Pinecone index is automatically created if it doesn't exist
+- Handles region configuration automatically
+- Waits for index to be ready before accepting requests
+- No manual index setup required
 
 **Key Features:**
 - Scalable vector storage
@@ -151,8 +158,8 @@ This project implements **both** required components:
 - **Batch Operations**: Efficient bulk embedding and storage
 
 **Location:** 
-- `backend/src/rag_edu_generator/services/vector_store.py`
-- `backend/src/rag_edu_generator/services/rag_service.py`
+- `backend/fastapi_backend/services/vector_store.py`
+- `backend/fastapi_backend/services/rag_service.py`
 
 **Key Features:**
 - High-dimensional vector embeddings
@@ -174,7 +181,7 @@ This project implements **both** required components:
   - Separator: Double newline
 - **Metadata Enrichment**: Each chunk includes page number, filename, chunk index
 
-**Location:** `backend/src/rag_edu_generator/utils/chunking.py`
+**Location:** `backend/fastapi_backend/utils/chunking.py`
 
 **Key Features:**
 - Balances semantic coherence and context preservation
@@ -196,7 +203,7 @@ This project implements **both** required components:
   - Select top-k most relevant
 - **Context Window Management**: Intelligent truncation preserving most relevant information
 
-**Location:** `backend/src/rag_edu_generator/services/rag_service.py`
+**Location:** `backend/fastapi_backend/services/rag_service.py`
 
 **Key Features:**
 - Ensures high-quality context
@@ -225,12 +232,17 @@ A comprehensive platform that enables students and educators to:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        Frontend Layer                       │
-│                    (Streamlit Web UI)                       │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────────┐    │
-│  │  Upload  │  │   Chat   │  │   Quiz   │  │Competitive│    │
-│  │   PDF    │  │   Q&A    │  │ Generate │  │   Quiz    │    │
-│  └──────────┘  └──────────┘  └──────────┘  └───────────┘    │
+│                    Frontend Layer                           │
+│  ┌──────────────────────┐  ┌──────────────────────────┐     │
+│  │  Next.js (Recommended)│  │  Streamlit (Legacy)      │     │
+│  │  - React/TypeScript  │  │  - Python-based UI      │     │
+│  │  - Tailwind CSS      │  │  - Rapid prototyping    │     │
+│  │  - Zustand State     │  │  - Session management   │     │
+│  └──────────────────────┘  └──────────────────────────┘     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌───────────┐   │
+│  │  Upload  │  │   Chat   │  │   Quiz   │  │Competitive│   │
+│  │   PDF    │  │   Q&A    │  │+ Analytics│  │   Quiz    │   │
+│  └──────────┘  └──────────┘  └──────────┘  └───────────┘   │
 │  ┌──────────┐  ┌──────────┐                                 │
 │  │ Summary  │  │Flashcards│                                 │
 │  └──────────┘  └──────────┘                                 │
@@ -253,7 +265,7 @@ A comprehensive platform that enables students and educators to:
 ┌───────▼──────┐ ┌──────▼──────┐ ┌─────▼───────┐
 │   Pinecone   │ │   OpenAI    │ │  PyMuPDF    │
 │ Vector Store │ │  Embeddings │ │ PDF Extract │
-│              │ │  & LLM      │ │             │
+│(Auto-Create) │ │  & LLM      │ │             │
 └──────────────┘ └─────────────┘ └─────────────┘
 ```
 
@@ -262,22 +274,23 @@ A comprehensive platform that enables students and educators to:
 **Backend Structure:**
 ```
 backend/
-├── src/rag_edu_generator/
+├── fastapi_backend/               # Main backend package
+│   ├── __main__.py                # Entry point (poetry run backend)
 │   ├── main.py                    # FastAPI application
-│   ├── config.py                  # Configuration management
-│   ├── api/
-│   │   ├── routes/                # API endpoints
-│   │   │   ├── upload.py          # PDF upload
-│   │   │   ├── chat.py            # RAG chat
-│   │   │   ├── quiz.py            # Quiz generation
-│   │   │   ├── competitive_quiz.py  # Adaptive quiz
-│   │   │   ├── summary.py         # Summary generation
-│   │   │   ├── flashcards.py      # Flashcard generation
-│   │   │   └── documents.py       # Document management
-│   │   └── middleware.py          # Exception handling
+│   ├── config.py                  # Configuration (Pydantic settings)
+│   ├── dependencies.py            # Dependency injection
+│   ├── middleware.py              # Exception handlers
+│   ├── routers/                   # API endpoints
+│   │   ├── upload.py              # PDF upload
+│   │   ├── chat.py                # RAG chat
+│   │   ├── quiz.py                # Quiz generation
+│   │   ├── competitive_quiz.py    # Adaptive quiz
+│   │   ├── summary.py             # Summary generation
+│   │   ├── flashcards.py          # Flashcard generation
+│   │   └── documents.py           # Document management
 │   ├── services/
 │   │   ├── rag_service.py         # RAG orchestration
-│   │   ├── vector_store.py        # Pinecone integration
+│   │   ├── vector_store.py        # Pinecone (with auto-creation)
 │   │   ├── content_generator.py   # Content generation
 │   │   ├── competitive_quiz_service.py  # Adaptive quiz
 │   │   └── pdf_extractor.py       # PDF processing
@@ -285,22 +298,45 @@ backend/
 │   │   ├── schemas.py             # Pydantic models
 │   │   └── document.py            # Document models
 │   └── utils/
-│       ├── chunking.py           # Hybrid chunking
-│       ├── adaptive_learning.py  # Q-Learning & Thompson Sampling
-│       └── errors.py             # Custom exceptions
+│       ├── chunking.py            # Hybrid chunking
+│       ├── adaptive_learning.py   # Q-Learning & Thompson Sampling
+│       └── errors.py              # Custom exceptions
 └── pyproject.toml                 # Dependencies
 ```
 
-**Frontend Structure:**
+**Frontend Structure (Next.js - Recommended):**
+```
+frontend_v2/
+├── app/                           # Next.js App Router
+│   ├── layout.tsx                 # Root layout with theme
+│   ├── page.tsx                   # Home page
+│   ├── upload/                    # PDF upload page
+│   ├── chat/                      # Chat interface
+│   ├── quiz/                      # Quiz with statistics
+│   ├── competitive-quiz/          # Adaptive quiz with analytics
+│   ├── summary/                   # Summary generation
+│   └── flashcards/                # Flashcard generation
+├── components/                    # React components
+│   ├── Sidebar.tsx                # Collapsible navigation
+│   ├── Header.tsx                 # Top header
+│   └── ThemeProvider.tsx          # Light/dark mode
+├── lib/                           # Utilities
+│   ├── api.ts                     # API client
+│   └── store.ts                   # Zustand state management
+└── package.json                   # Dependencies
+```
+
+**Frontend Structure (Streamlit - Legacy):**
 ```
 frontend/
-├── src/streamlit_app/
+├── streamlit_frontend/
+│   ├── __main__.py                # Entry point
 │   ├── main.py                    # Streamlit app entry
 │   ├── pages/
 │   │   ├── upload.py              # PDF upload UI
 │   │   ├── chat.py                # Chat interface
 │   │   ├── quiz.py                # Quiz UI
-│   │   ├── competitive_quiz.py   # Adaptive quiz UI
+│   │   ├── competitive_quiz.py    # Adaptive quiz UI
 │   │   ├── summary.py             # Summary UI
 │   │   └── flashcards.py          # Flashcard UI
 │   └── utils/
@@ -316,15 +352,24 @@ frontend/
 
 #### Backend
 - **Framework**: FastAPI 0.104.1
-- **RAG Framework**: LlamaIndex 0.10.68
-- **Vector Database**: Pinecone (serverless)
+- **RAG Framework**: LlamaIndex 0.10.0
+- **Vector Database**: Pinecone 5.0.0 (serverless, auto-creation)
 - **Embeddings**: OpenAI text-embedding-3-small (1536 dimensions)
-- **LLM**: OpenAI GPT-4 Turbo
-- **PDF Processing**: PyMuPDF 1.26.7
+- **LLM**: OpenAI GPT-4o-mini
+- **PDF Processing**: PyMuPDF 1.23.0
 - **Adaptive Learning**: NumPy (Q-Learning & Thompson Sampling)
-- **Validation**: Pydantic 2.12.5
+- **Validation**: Pydantic 2.5.0
+- **Dependency Management**: Poetry
 
-#### Frontend
+#### Frontend (Next.js - Recommended)
+- **Framework**: Next.js 14.2.35
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Icons**: Lucide React
+- **HTTP Client**: Native fetch API
+
+#### Frontend (Streamlit - Legacy)
 - **Framework**: Streamlit 1.52.1
 - **HTTP Client**: httpx 0.25.2
 - **Visualization**: Matplotlib, Pandas
@@ -392,6 +437,8 @@ frontend/
 - **Hybrid Chunking**: Page boundaries + semantic coherence
 - **Namespace Isolation**: Each document gets unique UUID namespace
 - **Document Persistence**: Continue with existing documents
+- **Pinecone Auto-Creation**: Index automatically created if it doesn't exist
+- **Filename Preservation**: Document names stored and displayed throughout
 
 ### 2. RAG-Powered Chat
 - **Systematic Prompting**: Question type detection and dynamic prompts
@@ -399,20 +446,33 @@ frontend/
 - **Intelligent Fallback**: Detects when information is not in documents
 - **Source Citation**: Shows page numbers and filenames
 - **Educational Focus**: Tailored for learning contexts
+- **Document Names**: Actual filenames displayed throughout the interface
 
 ### 3. Quiz Generation
 - **Contextual Questions**: Self-contained questions with sufficient context
 - **Multiple Question Types**: MCQ and short answer
 - **Hints System**: Guides without revealing answers
 - **LLM Evaluation**: Semantic evaluation of short answers
-- **Performance Analytics**: Detailed statistics and visualizations
+- **Performance Analytics**: 
+  - Detailed statistical analysis with visual charts
+  - Overall performance metrics with progress bars
+  - Breakdown by question type (Multiple Choice vs Short Answer)
+  - Visual bar charts showing correct/incorrect/unanswered
+  - Answer history with visual grid representation
+  - Completion rate and accuracy tracking
 
 ### 4. Competitive Quiz (Adaptive Learning)
-- **Question Bank**: 50 MCQ questions across 3 difficulty levels
+- **Question Bank**: 30 MCQ questions across 3 difficulty levels
 - **Q-Learning**: Learns optimal difficulty selection
 - **Thompson Sampling**: Balances exploration and exploitation
 - **Real-time Adaptation**: Adjusts difficulty after each answer
 - **Reward System**: Positive/negative rewards based on performance
+- **Comprehensive Statistics**: 
+  - Real-time performance tracking with progress bars
+  - Final statistics with visual charts
+  - Difficulty distribution analysis (Low/Medium/Hard)
+  - Reward tracking and performance trends
+  - Visual answer history grid
 
 ### 5. Summary Generation
 - **Multiple Lengths**: Short, medium, and long summaries
@@ -456,12 +516,14 @@ Next Question
 ### Key Design Decisions
 
 1. **LlamaIndex over LangChain**: Better Pinecone integration, simpler RAG workflows
-2. **Pinecone over Weaviate/Milvus**: Managed service, easy setup, serverless scaling
+2. **Pinecone over Weaviate/Milvus**: Managed service, easy setup, serverless scaling, auto-creation
 3. **OpenAI over Open-Source**: High-quality pre-trained models, no fine-tuning needed
-4. **Streamlit over React**: Rapid development, perfect for educational tools
+4. **Next.js over Streamlit**: Modern React framework, better UX, professional interface
 5. **FastAPI over Flask**: Modern, fast, automatic API documentation
 6. **Namespace Isolation**: Enables multi-document support and session management
 7. **Hybrid Chunking**: Balances semantic coherence and context preservation
+8. **Dependency Injection**: Clean service management with singleton pattern
+9. **Visual Analytics**: Charts and progress bars for better user understanding
 
 ---
 
@@ -593,7 +655,7 @@ poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_
 - Quality filtering removes low-quality chunks
 - Token-aware truncation preserving most relevant information
 
-**Location:** `backend/src/rag_edu_generator/services/rag_service.py`
+**Location:** `backend/fastapi_backend/services/rag_service.py`
 
 ### Challenge 4: Adaptive Difficulty Balance
 
@@ -604,7 +666,7 @@ poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_
 - Performance trend analysis guides difficulty selection
 - Real-time adjustment based on correctness
 
-**Location:** `backend/src/rag_edu_generator/utils/adaptive_learning.py`
+**Location:** `backend/fastapi_backend/utils/adaptive_learning.py`
 
 ### Challenge 5: Multi-Document Support
 
@@ -616,9 +678,39 @@ poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_
 - Session-based document management
 - Filename preservation throughout the system
 
-**Location:** `backend/src/rag_edu_generator/services/vector_store.py`
+**Location:** `backend/fastapi_backend/services/vector_store.py`
 
-### Challenge 6: Short Answer Evaluation
+### Challenge 6: Pinecone Index Setup
+
+**Problem:** Users need to manually create Pinecone index, causing setup friction and errors.
+
+**Solution:**
+- Implemented automatic index creation on startup
+- Detects if index exists, creates if missing
+- Handles region configuration automatically
+- Waits for index to be ready before accepting requests
+- No manual setup required
+- Improved error handling and logging
+
+**Location:** `backend/fastapi_backend/services/vector_store.py`
+
+### Challenge 7: User Understanding of Statistics
+
+**Problem:** Raw statistics numbers are hard to interpret for users, making it difficult to understand performance.
+
+**Solution:**
+- Added visual progress bars for all metrics
+- Implemented bar charts showing correct/incorrect/unanswered breakdown
+- Created visual grid for answer history (color-coded squares)
+- Added real-time progress tracking during quizzes
+- Color-coded indicators (green for correct, red for incorrect, gray for unanswered)
+- Comprehensive statistics with difficulty breakdown
+
+**Location:** 
+- `frontend_v2/app/quiz/page.tsx`
+- `frontend_v2/app/competitive-quiz/page.tsx`
+
+### Challenge 8: Short Answer Evaluation
 
 **Problem:** Evaluating short answers requires semantic understanding, not just exact matching.
 
@@ -628,7 +720,36 @@ poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_
 - Key concept matching
 - Provides feedback along with correctness
 
-**Location:** `backend/src/rag_edu_generator/services/content_generator.py`
+**Location:** `backend/fastapi_backend/services/content_generator.py`
+
+### Challenge 9: Backend Structure Organization
+
+**Problem:** Deep nesting (`src/rag_edu_generator/`) made the codebase hard to navigate and understand.
+
+**Solution:**
+- Restructured backend to use `fastapi_backend/` directly
+- Moved all code to top-level package structure
+- Updated all imports across the codebase
+- Implemented dependency injection pattern
+- Clean router-based API structure
+- Removed unnecessary nesting
+
+**Location:** `backend/fastapi_backend/`
+
+### Challenge 10: Frontend Modernization
+
+**Problem:** Streamlit UI was functional but limited in customization and user experience.
+
+**Solution:**
+- Created Next.js React frontend with TypeScript
+- Implemented modern UI with Tailwind CSS
+- Added light/dark mode support
+- Created collapsible sidebar for better navigation
+- Integrated Zustand for state management
+- Added visual statistics and charts
+- Professional, minimal design
+
+**Location:** `frontend_v2/`
 
 ---
 
@@ -656,12 +777,19 @@ poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_
    - Export summaries as DOCX
    - Export flashcards for Anki
 
+5. **Enhanced Analytics**
+   - Learning progress over time
+   - Performance trends
+   - Personalized recommendations
+
 ### Medium-Term (3-6 months)
 
-1. **React Frontend**
-   - Replace Streamlit with React
-   - Better user experience
-   - More customization options
+1. **Frontend Enhancements** ✅ (Partially Complete)
+   - ✅ Next.js React frontend implemented
+   - ✅ Modern UI with light/dark mode
+   - ✅ Visual statistics and charts
+   - ⏳ Additional UI improvements
+   - ⏳ Mobile responsiveness optimization
 
 2. **Multi-Language Support**
    - Support for multiple languages
@@ -852,34 +980,45 @@ poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_
 ### GitHub Repository Structure
 
 ```
-RAG-Powered Educational Content Generator/
-├── backend/                    # FastAPI backend
-│   ├── src/rag_edu_generator/  # Source code
-│   ├── pyproject.toml          # Dependencies
-│   └── README.md               # Backend documentation
-├── frontend/                   # Streamlit frontend
-│   ├── src/streamlit_app/      # Source code
-│   ├── pyproject.toml          # Dependencies
-│   └── README.md               # Frontend documentation
-├── docs/                       # GitHub Pages website
+educational_content_generator_RAG/
+├── backend/                     # FastAPI backend
+│   ├── fastapi_backend/         # Main backend package
+│   │   ├── routers/             # API endpoints
+│   │   ├── services/            # Business logic
+│   │   ├── models/              # Data models
+│   │   └── utils/               # Utilities
+│   ├── pyproject.toml           # Dependencies
+│   └── README.md                # Backend documentation
+├── frontend_v2/                 # Next.js frontend (recommended)
+│   ├── app/                     # Next.js pages
+│   ├── components/              # React components
+│   ├── lib/                     # Utilities
+│   ├── package.json             # Dependencies
+│   └── README.md                # Frontend documentation
+├── frontend/                    # Streamlit frontend (legacy)
+│   ├── streamlit_frontend/      # Source code
+│   ├── pyproject.toml           # Dependencies
+│   └── README.md                # Frontend documentation
+├── docs/                        # GitHub Pages website
 │   ├── index.html
 │   ├── styles.css
 │   └── script.js
 ├── project_documentation/       # Project documentation
-│   └── DELIVERABLES.md         # This file
-├── README.md                    # Main README
-├── RUN.md                       # Quick start guide
-├── SETUP_STEPS.md              # Detailed setup instructions
-└── .gitignore                   # Git ignore rules
+│   └── DELIVERABLES.md          # This file
+├── README.md                     # Main README
+├── RUN.md                        # Quick start guide
+├── SETUP_STEPS.md               # Detailed setup instructions
+└── .gitignore                    # Git ignore rules
 ```
 
 ### Complete Source Code
 
 ✅ **All source code included:**
-- Backend: FastAPI application with RAG pipeline
-- Frontend: Streamlit web interface
+- Backend: FastAPI application with RAG pipeline (fastapi_backend package)
+- Frontend (Next.js): Modern React application with TypeScript
+- Frontend (Streamlit): Legacy Python-based UI
 - Utilities: Chunking, adaptive learning, error handling
-- Configuration: Environment-based configuration
+- Configuration: Environment-based configuration with Pydantic
 
 ### Documentation
 
@@ -908,10 +1047,7 @@ RAG-Powered Educational Content Generator/
 - Integration testing through API endpoints
 
 **Test Files:**
-- `backend/test_indexing.py`
-- `backend/test_pinecone.py`
-- `backend/check_index.py`
-- `backend/debug_upload.py`
+- `backend/test_pinecone.py` - Pinecone connection and index creation test
 
 ### Example Outputs
 
@@ -932,7 +1068,13 @@ RAG-Powered Educational Content Generator/
 - Retrieval mechanisms
 - Chunking strategies
 
-**Implementation:** `backend/src/rag_edu_generator/services/vector_store.py`
+**Implementation:** `backend/fastapi_backend/services/vector_store.py`
+
+**Key Features:**
+- Automatic index creation if it doesn't exist
+- Region configuration handling
+- Namespace isolation for multi-document support
+- Metadata preservation (filenames, page numbers)
 
 ---
 
@@ -1098,10 +1240,13 @@ RAG-Powered Educational Content Generator/
 #### Interface Usability
 
 ✅ **User-Friendly Interface:**
-- Intuitive Streamlit UI
-- Clear navigation
+- Modern Next.js React interface (recommended)
+- Intuitive Streamlit UI (legacy)
+- Clear navigation with collapsible sidebar
+- Light/dark mode support
 - Real-time feedback
-- Visual analytics
+- Visual analytics with charts and progress bars
+- Document names displayed throughout
 
 #### Overall User Experience
 
@@ -1141,11 +1286,12 @@ RAG-Powered Educational Content Generator/
 
 ### ✅ Streamlit, Flask, or React for Web Interfaces
 
-**Used: Streamlit + FastAPI**
-- Frontend: Streamlit 1.52.1
+**Used: Next.js (React) + Streamlit + FastAPI**
+- Frontend (Recommended): Next.js 14.2.35 with React 18.3.1
+- Frontend (Legacy): Streamlit 1.52.1
 - Backend: FastAPI 0.104.1
 - RESTful API
-- Interactive web interface
+- Modern, professional web interface with visual analytics
 
 ### ⚠️ GitHub Pages for Hosting Project Web Page
 
@@ -1170,11 +1316,20 @@ The project is production-ready, well-documented, and demonstrates best practice
 
 ---
 
-**Project Repository:** [GitHub Repository URL]
+**Project Repository:** https://github.com/LinataDeshmukh/educational_content_generator_RAG.git
 
 **Live Demo:** [Deployment URL if available]
 
-**Contact:** : Linata Deshmukh & Pranesh Kannan
+**Key Updates:**
+- ✅ Next.js frontend with modern UI
+- ✅ Comprehensive statistical analysis with visual charts
+- ✅ Pinecone auto-creation (no manual setup)
+- ✅ Competitive quiz updated to 30 questions
+- ✅ Document names displayed throughout
+- ✅ Light/dark mode support
+- ✅ Enhanced user experience with progress bars and visualizations
+
+**Contact:** Linata Deshmukh & Pranesh Kannan
 
 ---
 

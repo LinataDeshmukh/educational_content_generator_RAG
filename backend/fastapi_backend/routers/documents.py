@@ -2,11 +2,11 @@
 
 import logging
 
-from fastapi import APIRouter, HTTPException, status
-from pinecone import Pinecone
+from fastapi import APIRouter, Depends, HTTPException, status
 
-from fastapi_backend.config import settings
+from fastapi_backend.dependencies import get_vector_store_service
 from fastapi_backend.models.schemas import ErrorResponse
+from fastapi_backend.services.vector_store import VectorStoreService
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,9 @@ router = APIRouter(prefix="/documents", tags=["documents"])
         500: {"model": ErrorResponse},
     },
 )
-async def list_documents():
+async def list_documents(
+    vector_store: VectorStoreService = Depends(get_vector_store_service),
+):
     """
     List all existing documents (namespaces) in Pinecone.
 
@@ -27,8 +29,11 @@ async def list_documents():
         List of documents with their IDs, filenames, and metadata
     """
     try:
-        pc = Pinecone(api_key=settings.pinecone_api_key)
-        index = pc.Index(settings.pinecone_index_name)
+        # Use the already-initialized Pinecone index
+        index = vector_store.pinecone_index
+        
+        if not index:
+            return {"documents": [], "total": 0}
 
         stats = index.describe_index_stats()
         namespaces = stats.get("namespaces", {})
@@ -92,4 +97,3 @@ async def list_documents():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to list documents: {str(e)}",
         )
-

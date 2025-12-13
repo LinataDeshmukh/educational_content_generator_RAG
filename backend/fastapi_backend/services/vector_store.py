@@ -1,6 +1,7 @@
 """Pinecone vector store integration."""
 
 import logging
+import time
 from typing import Optional
 
 from llama_index.core import Document as LlamaDocument
@@ -10,6 +11,9 @@ from pinecone import Pinecone, ServerlessSpec
 from fastapi_backend.config import settings
 from fastapi_backend.models.document import DocumentChunk
 from fastapi_backend.utils.errors import VectorStoreError
+
+# Suppress verbose Pinecone logs
+logging.getLogger("pinecone_plugin_interface").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
@@ -21,41 +25,65 @@ class VectorStoreService:
         """Initialize the vector store service."""
         self.pinecone_client: Optional[Pinecone] = None
         self.vector_store: Optional[PineconeVectorStore] = None
+        self.pinecone_index = None
+        self.index_name = None
         self._initialize_pinecone()
 
     def _initialize_pinecone(self) -> None:
         """Initialize Pinecone client and vector store."""
         try:
-            self.pinecone_client = Pinecone(api_key=settings.pinecone_api_key)
             index_name = settings.pinecone_index_name
-            existing_indexes = [idx.name for idx in self.pinecone_client.list_indexes()]
-
-            if index_name not in existing_indexes:
-                logger.info(f"Creating Pinecone index: {index_name}")
-                dimension = 1536  # OpenAI embeddings
-                cloud = "gcp" if "gcp" in settings.pinecone_environment.lower() else "aws"
-
-                self.pinecone_client.create_index(
-                    name=index_name,
-                    dimension=dimension,
-                    metric="cosine",
-                    spec=ServerlessSpec(cloud=cloud, region=settings.pinecone_environment),
-                )
-                logger.info(f"Created Pinecone index: {index_name}")
-            else:
-                logger.info(f"Using existing Pinecone index: {index_name}")
-
-            index = self.pinecone_client.Index(index_name)
-            self.vector_store = PineconeVectorStore(pinecone_index=index)
             self.index_name = index_name
-            self.pinecone_index = index
-
-            logger.info("Pinecone vector store initialized successfully")
+            
+            # Initialize client
+            self.pinecone_client = Pinecone(api_key=settings.pinecone_api_key)
+            
+            # Check if index exists
+            index_exists = self.pinecone_client.has_index(index_name)
+            
+            # Create if needed
+            if not index_exists:
+                logger.info(f"Creating Pinecone index '{index_name}'...")
+                self._create_index(index_name)
+            
+            # Connect
+            self._connect_to_index(index_name)
+            logger.info(f"Pinecone ready: {index_name}")
 
         except Exception as e:
-            error_msg = f"Failed to initialize Pinecone: {str(e)}"
-            logger.error(error_msg, exc_info=True)
-            raise VectorStoreError(error_msg) from e
+            logger.error(f"Pinecone init failed: {e}")
+            raise VectorStoreError(f"Failed to initialize Pinecone: {e}") from e
+
+    def _create_index(self, index_name: str) -> None:
+        """Create a new Pinecone serverless index."""
+        env = settings.pinecone_environment.lower().strip()
+        cloud = "gcp" if "gcp" in env else "aws"
+        region = env if env in ["us-east-1", "us-west-2", "eu-west-1"] else "us-east-1"
+        
+        self.pinecone_client.create_index(
+            name=index_name,
+            dimension=1536,
+            metric="cosine",
+            spec=ServerlessSpec(cloud=cloud, region=region),
+        )
+        
+        # Wait for ready
+        for _ in range(30):
+            desc = self.pinecone_client.describe_index(index_name)
+            if hasattr(desc.status, 'ready') and desc.status.ready:
+                break
+            time.sleep(2)
+
+    def _connect_to_index(self, index_name: str) -> None:
+        """Connect to the Pinecone index."""
+        desc = self.pinecone_client.describe_index(index_name)
+        host = desc.host
+        
+        index = self.pinecone_client.Index(index_name, host=host)
+        
+        # Store references
+        self.pinecone_index = index
+        self.vector_store = PineconeVectorStore(pinecone_index=index)
 
     def add_documents(
         self,
@@ -117,15 +145,13 @@ class VectorStoreService:
 
     def clear_namespace(self, namespace: str) -> None:
         """Clear all documents in a namespace."""
-        if not self.pinecone_client:
-            raise VectorStoreError("Pinecone client not initialized")
+        if not self.pinecone_index:
+            raise VectorStoreError("Pinecone index not initialized")
 
         try:
-            index = self.pinecone_client.Index(settings.pinecone_index_name)
-            index.delete(delete_all=True, namespace=namespace)
+            self.pinecone_index.delete(delete_all=True, namespace=namespace)
             logger.info(f"Cleared namespace: {namespace}")
         except Exception as e:
             error_msg = f"Failed to clear namespace {namespace}: {str(e)}"
             logger.error(error_msg, exc_info=True)
             raise VectorStoreError(error_msg) from e
-

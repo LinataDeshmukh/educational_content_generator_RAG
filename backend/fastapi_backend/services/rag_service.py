@@ -179,68 +179,58 @@ class RAGService:
             logger.info("This may take a moment depending on the number of chunks...")
             
             # Insert nodes - this will generate embeddings and store in Pinecone
-            # IMPORTANT: Use Pinecone directly with namespace to ensure proper isolation
+            # Use the already-initialized Pinecone index from vector_store_service
             try:
-                if namespace:
-                    # Use Pinecone directly for namespace support
-                    from fastapi_backend.config import settings
-                    from pinecone import Pinecone
+                # Get the Pinecone index from vector store service
+                pinecone_index = self.vector_store_service.pinecone_index
+                
+                if not pinecone_index:
+                    raise RAGServiceError("Pinecone index not initialized")
+                
+                # Generate embeddings and upsert
+                vectors_to_upsert = []
+                for node_idx, node in enumerate(nodes):
+                    # Get embedding for the node text
+                    embedding = self.embedding_model.get_text_embedding(node.text)
                     
-                    pc = Pinecone(api_key=settings.pinecone_api_key)
-                    pinecone_index = pc.Index(settings.pinecone_index_name)
+                    # Prepare metadata
+                    metadata = {
+                        "text": node.text,  # Store text in metadata for retrieval
+                        "page_number": node.metadata.get("page_number", 1),
+                        "chunk_index": node.metadata.get("chunk_index", node_idx),
+                    }
                     
-                    # Generate embeddings and upsert with namespace
-                    vectors_to_upsert = []
-                    for node in nodes:
-                        # Get embedding for the node text
-                        embedding = self.embedding_model.get_text_embedding(node.text)
-                        
-                        # Prepare metadata (ensure namespace is included)
-                        # Also include filename from document metadata if available
-                        metadata = {
-                            **node.metadata,
-                            "text": node.text,  # Store text in metadata for retrieval
-                            "namespace": namespace,  # Ensure namespace is in metadata
-                        }
-                        
-                        # Store filename in first chunk for easy retrieval
-                        if idx == 0:
-                            # Extract filename from files array if available
-                            if node.metadata.get("files"):
-                                files_info = node.metadata.get("files")
-                                if isinstance(files_info, list) and len(files_info) > 0:
-                                    # Extract filenames from files array
-                                    filenames = []
-                                    for f in files_info:
-                                        if isinstance(f, dict) and f.get("filename"):
-                                            filenames.append(f.get("filename"))
-                                    if filenames:
-                                        metadata["filename"] = ", ".join(filenames)
-                                        metadata["files"] = files_info  # Also keep full files info
-                            elif node.metadata.get("file_1_metadata"):
-                                # Store filename from combined document metadata
-                                file_meta = node.metadata.get("file_1_metadata", {})
-                                if isinstance(file_meta, dict) and file_meta.get("filename"):
-                                    metadata["filename"] = file_meta.get("filename")
-                        
-                        vectors_to_upsert.append({
-                            "id": node.id_ if hasattr(node, 'id_') and node.id_ else f"{namespace}_{len(vectors_to_upsert)}",
-                            "values": embedding,
-                            "metadata": metadata,
-                        })
+                    # Add namespace to metadata if provided
+                    if namespace:
+                        metadata["namespace"] = namespace
                     
-                    # Upsert in batches
-                    batch_size = 100
-                    for i in range(0, len(vectors_to_upsert), batch_size):
-                        batch = vectors_to_upsert[i:i + batch_size]
+                    # Store filename from document metadata (first chunk usually has it)
+                    if node.metadata.get("filename"):
+                        metadata["filename"] = node.metadata.get("filename")
+                    elif node.metadata.get("files"):
+                        files_info = node.metadata.get("files")
+                        if isinstance(files_info, list):
+                            filenames = [f.get("filename", "") for f in files_info if isinstance(f, dict)]
+                            if filenames:
+                                metadata["filename"] = ", ".join(filter(None, filenames))
+                    
+                    vectors_to_upsert.append({
+                        "id": node.id_ if hasattr(node, 'id_') and node.id_ else f"{namespace or 'doc'}_{node_idx}",
+                        "values": embedding,
+                        "metadata": metadata,
+                    })
+                
+                # Upsert in batches
+                batch_size = 100
+                for i in range(0, len(vectors_to_upsert), batch_size):
+                    batch = vectors_to_upsert[i:i + batch_size]
+                    if namespace:
                         pinecone_index.upsert(vectors=batch, namespace=namespace)
-                        logger.info(f"Upserted batch {i//batch_size + 1} ({len(batch)} vectors) to namespace '{namespace}'")
-                    
-                    logger.info(f"Successfully inserted {len(nodes)} nodes into Pinecone namespace '{namespace}'")
-                else:
-                    # Fallback to LlamaIndex method (no namespace)
-                    temp_index.insert_nodes(nodes)
-                    logger.info(f"Successfully inserted {len(nodes)} nodes into Pinecone (no namespace)")
+                    else:
+                        pinecone_index.upsert(vectors=batch)
+                    logger.info(f"Upserted batch {i//batch_size + 1} ({len(batch)} vectors)")
+                
+                logger.info(f"Successfully inserted {len(nodes)} nodes into Pinecone")
             except Exception as insert_error:
                 logger.error(f"Error inserting nodes: {insert_error}", exc_info=True)
                 raise
@@ -822,21 +812,17 @@ Answer:"""
 
             # Use Pinecone directly for namespace filtering if namespace is provided
             if namespace:
-                # Query Pinecone directly with namespace filtering
-                from fastapi_backend.config import settings
-                from pinecone import Pinecone
-                from llama_index.embeddings.openai import OpenAIEmbedding
-                import numpy as np
+                # Get the Pinecone index from vector store service (already initialized)
+                pinecone_index = self.vector_store_service.pinecone_index
+                
+                if not pinecone_index:
+                    raise RAGServiceError("Pinecone index not initialized")
 
                 # Get embedding for the query
                 query_embedding = self.embedding_model.get_query_embedding(query)
 
-                # Query Pinecone directly with namespace
-                pc = Pinecone(api_key=settings.pinecone_api_key)
-                index = pc.Index(settings.pinecone_index_name)
-
                 # Query with namespace filter
-                query_response = index.query(
+                query_response = pinecone_index.query(
                     vector=query_embedding,
                     top_k=min(top_k * 2, 20),  # Retrieve more for filtering
                     namespace=namespace,

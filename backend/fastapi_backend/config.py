@@ -20,9 +20,13 @@ class Settings(BaseSettings):
 
     # Pinecone Configuration
     pinecone_api_key: str = Field(..., description="Pinecone API key")
-    pinecone_environment: str = Field(..., description="Pinecone environment")
+    pinecone_environment: str = Field(
+        default="us-east-1", 
+        description="Pinecone region (e.g., us-east-1, eu-west-1). Will auto-create index if it doesn't exist."
+    )
     pinecone_index_name: str = Field(
-        default="rag-educational-content", description="Pinecone index name"
+        default="learnify", 
+        description="Pinecone index name (will be created automatically if it doesn't exist)"
     )
 
     # Application Configuration
@@ -37,7 +41,7 @@ class Settings(BaseSettings):
 
     # LLM Configuration
     llm_model: str = Field(
-        default="gpt-4-turbo-preview", description="OpenAI LLM model"
+        default="gpt-4o-mini", description="OpenAI LLM model"
     )
     llm_temperature: float = Field(
         default=0.7, description="Temperature for LLM generation"

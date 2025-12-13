@@ -114,7 +114,12 @@ async def upload_pdf(
 
         # Combine all documents into one
         combined_text_parts = []
-        combined_metadata = {"files": file_info, "total_files": len(files)}
+        file_names = ", ".join([f["filename"] for f in file_info])
+        combined_metadata = {
+            "files": file_info, 
+            "total_files": len(files),
+            "filename": file_names,  # Add filename to metadata for easy retrieval
+        }
 
         for i, doc in enumerate(extracted_docs):
             file_header = f"\n\n=== FILE {i+1}: {file_info[i]['filename']} ===\n\n"
@@ -155,7 +160,6 @@ async def upload_pdf(
                 detail=f"Failed to index document: {str(e)}",
             )
 
-        file_names = ", ".join([f.filename for f in files])
         logger.info(f"Successfully indexed {len(files)} file(s): {file_names}")
 
         return UploadResponse(

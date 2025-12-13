@@ -1,6 +1,8 @@
 # How to Run
 
-## Backend
+## Quick Start
+
+### Backend
 
 ```powershell
 cd backend
@@ -9,7 +11,45 @@ poetry run backend
 
 Backend will run on: http://localhost:8000
 
-## Frontend
+**First time setup:**
+```powershell
+cd backend
+poetry install
+poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
+```
+
+Create `.env` file in `backend/`:
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+PINECONE_API_KEY=your_pinecone_api_key_here
+PINECONE_ENVIRONMENT=us-east-1
+PINECONE_INDEX_NAME=rag-educational-content
+```
+
+**Note:** The Pinecone index will be automatically created if it doesn't exist. You only need your API key and region.
+
+### Frontend (Next.js - Recommended)
+
+```powershell
+cd frontend_v2
+npm install   # First time only
+npm run dev
+```
+
+Frontend will run on: http://localhost:3000
+
+**First time setup:**
+1. Create `.env.local` file in `frontend_v2/`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+2. Install dependencies:
+```powershell
+npm install
+```
+
+### Frontend (Streamlit - Legacy)
 
 ```powershell
 cd frontend
@@ -18,34 +58,36 @@ poetry run frontend
 
 Frontend will run on: http://localhost:8501
 
+**First time setup:**
+```powershell
+cd frontend
+poetry install
+```
+
+Create `.env` file in `frontend/`:
+```env
+BACKEND_API_URL=http://localhost:8000
+```
+
 ---
 
-## First Time Setup
+## Complete Setup Guide
 
-### Step 1: Install Dependencies
+For detailed setup instructions, see [SETUP_STEPS.md](SETUP_STEPS.md).
 
-```powershell
-cd backend
-poetry install
+## Features
 
-cd ../frontend
-poetry install
-```
-
-### Step 2: Download NLTK Data (Backend Only)
-
-NLTK requires separate data files. After `poetry install`, run:
-
-```powershell
-cd backend
-poetry run python -c "import nltk; nltk.download('punkt'); nltk.download('punkt_tab')"
-```
-
-**Why?** Poetry installs the NLTK package, but NLTK data files (tokenizers, etc.) must be downloaded separately from NLTK's servers. See [SETUP_STEPS.md](SETUP_STEPS.md) for details.
+- **PDF Upload**: Upload and index PDF documents (up to 300 pages)
+- **Chat**: Ask questions about your documents with RAG-powered answers
+- **Quiz**: Generate quizzes with detailed statistical analysis and visual charts
+- **Competitive Quiz**: Adaptive difficulty quiz (30 questions) with comprehensive analytics
+- **Summary**: Generate summaries of varying lengths
+- **Flashcards**: Create flashcards for studying
 
 ## Notes
 
-- The `poetry.lock` file and `.venv` folder are created in each project folder (`backend/` and `frontend/`)
-- Poetry manages the virtual environment automatically - no need to activate it manually
-- Use `poetry run <command>` to run commands in the virtual environment
-
+- The backend uses Poetry for dependency management
+- The Next.js frontend uses npm for dependency management
+- Pinecone index is automatically created if it doesn't exist
+- Document names are displayed throughout the application
+- All statistics include visual charts and progress bars
