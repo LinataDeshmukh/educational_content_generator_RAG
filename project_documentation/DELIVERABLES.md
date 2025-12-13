@@ -1323,6 +1323,8 @@ The project is production-ready, well-documented, and demonstrates best practice
 - BACKEND_API_URL=http://localhost:8000
 - The Next.js frontend runs on http://localhost:3000
 - The Streamlit frontend runs on http://localhost:8501
+- L_Video Link: https://northeastern.zoom.us/rec/share/ZMQxn0qZGuzp7YJW2PR8X1F2ef9Gow11x5eeVAJ4zHQe1R2o_fp6NT9MNPqHjCi8.B-g4BXpaOuGu2zmE 
+Passcode: @9Gmn88w
 
 **Portfolio Website:**
 https://linatadeshmukh.github.io/educational_content_generator_RAG/
