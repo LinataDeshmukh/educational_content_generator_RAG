@@ -2,8 +2,9 @@
 name = "rag-edu-generator"
 version = "0.1.0"
 description = "RAG-powered educational content generator backend"
-authors = ["Developer"]
+authors = ["Linata Deshmukh <deshmukh.li@northeastern.edu>", "Pranesh Kannan <g.p@northeastern.edu>"]
 readme = "README.md"
+license = "MIT"
 packages = [{include = "fastapi_backend"}]
 
 [tool.poetry.dependencies]

@@ -275,4 +275,6 @@ For creating a portfolio website to showcase this project, see [docs/README.md](
 
 ## License
 
-This project is for educational purposes.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2024 Linata Deshmukh & Pranesh Kannan

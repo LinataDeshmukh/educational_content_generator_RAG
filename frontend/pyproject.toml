@@ -2,8 +2,9 @@
 name = "rag-edu-generator-frontend"
 version = "0.1.0"
 description = "Streamlit frontend for RAG-powered educational content generator"
-authors = ["Developer"]
+authors = ["Linata Deshmukh <deshmukh.li@northeastern.edu>", "Pranesh Kannan <g.p@northeastern.edu>"]
 readme = "README.md"
+license = "MIT"
 packages = [{include = "streamlit_frontend"}]
 
 [tool.poetry.dependencies]
