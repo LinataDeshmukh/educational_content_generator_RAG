@@ -132,6 +132,25 @@ export default function CompetitiveQuizPage() {
     const performanceTrend = s.performance_trend || 'stable'
     const difficultyDist = s.difficulty_distribution || {}
     
+    // Calculate progress over time for line graph
+    const progressData = answerHistory.reduce((acc: any[], a: any, index: number) => {
+      const prev = acc[acc.length - 1] || { question: 0, cumulativeCorrect: 0, cumulativeReward: 0, accuracy: 0 }
+      const cumulativeCorrect = prev.cumulativeCorrect + (a.is_correct ? 1 : 0)
+      const cumulativeReward = prev.cumulativeReward + a.reward
+      const accuracy = ((cumulativeCorrect / (index + 1)) * 100)
+      
+      acc.push({
+        question: index + 1,
+        cumulativeCorrect,
+        cumulativeReward,
+        accuracy: Math.round(accuracy * 10) / 10,
+        reward: a.reward,
+        isCorrect: a.is_correct,
+        difficulty: a.difficulty
+      })
+      return acc
+    }, [])
+    
     // Calculate stats by difficulty
     const difficultyStats = answerHistory.reduce((acc: any, a: any) => {
       if (!acc[a.difficulty]) {
@@ -146,6 +165,16 @@ export default function CompetitiveQuizPage() {
       acc[a.difficulty].reward += a.reward
       return acc
     }, {})
+    
+    // Calculate reward progression
+    const rewardProgression = progressData.map((p: any) => p.cumulativeReward)
+    const accuracyProgression = progressData.map((p: any) => p.accuracy)
+    
+    // Find min/max for graph scaling
+    const maxReward = Math.max(...rewardProgression, 1)
+    const minReward = Math.min(...rewardProgression, 0)
+    const maxAccuracy = 100
+    const minAccuracy = 0
     
     return (
       <div className="max-w-2xl mx-auto py-8">
@@ -257,6 +286,263 @@ export default function CompetitiveQuizPage() {
                 </div>
               )
             })}
+          </div>
+        </div>
+
+        {/* Progress Over Time - Line Graph */}
+        <div className="mb-8 p-6 rounded-xl bg-card border border-border">
+          <h3 className="text-lg font-semibold mb-4">📈 Progress Over Time</h3>
+          
+          {/* Accuracy Progression Line Graph */}
+          <div className="mb-6">
+            <h4 className="text-sm font-medium mb-3 text-muted-foreground">Accuracy Progression</h4>
+            <div className="relative h-64 bg-muted/30 rounded-lg">
+              {/* Y-axis labels - positioned with proper spacing */}
+              <div className="absolute left-2 top-4 bottom-12 flex flex-col justify-between text-xs text-muted-foreground w-10">
+                <span className="text-right">100%</span>
+                <span className="text-right">75%</span>
+                <span className="text-right">50%</span>
+                <span className="text-right">25%</span>
+                <span className="text-right">0%</span>
+              </div>
+              
+              {/* Graph area with padding */}
+              <div className="ml-12 mr-4 mt-4 mb-10 h-[calc(100%-3.5rem)]">
+                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" className="overflow-visible">
+                  {/* Grid lines */}
+                  {[0, 25, 50, 75, 100].map((y) => (
+                    <line
+                      key={y}
+                      x1="0"
+                      y1={100 - y}
+                      x2="100"
+                      y2={100 - y}
+                      stroke="currentColor"
+                      strokeWidth="0.3"
+                      opacity="0.2"
+                    />
+                  ))}
+                  
+                  {/* Accuracy line */}
+                  {progressData.length > 0 && (
+                    <polyline
+                      points={progressData.map((p: any, i: number) => {
+                        const x = progressData.length > 1 ? (i / (progressData.length - 1)) * 100 : 50
+                        const y = 100 - p.accuracy
+                        return `${x},${y}`
+                      }).join(' ')}
+                      fill="none"
+                      stroke="rgb(13, 148, 136)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
+                  
+                  {/* Data points */}
+                  {progressData.map((p: any, i: number) => {
+                    const x = progressData.length > 1 ? (i / (progressData.length - 1)) * 100 : 50
+                    const y = 100 - p.accuracy
+                    return (
+                      <circle
+                        key={i}
+                        cx={x}
+                        cy={y}
+                        r="3"
+                        fill={p.isCorrect ? "rgb(34, 197, 94)" : "rgb(239, 68, 68)"}
+                        stroke="white"
+                        strokeWidth="1.5"
+                      />
+                    )
+                  })}
+                </svg>
+              </div>
+              
+              {/* X-axis labels - properly aligned */}
+              <div className="absolute bottom-2 left-12 right-4 flex justify-between text-xs text-muted-foreground">
+                {progressData.length <= 10 ? (
+                  progressData.map((p: any, i: number) => (
+                    <span key={i} className="text-center" style={{ width: `${100 / progressData.length}%` }}>
+                      Q{p.question}
+                    </span>
+                  ))
+                ) : (
+                  progressData.map((p: any, i: number) => {
+                    const step = Math.ceil(progressData.length / 5)
+                    if (i === 0 || i === progressData.length - 1 || i % step === 0) {
+                      return (
+                        <span key={i} className="text-center">
+                          Q{p.question}
+                        </span>
+                      )
+                    }
+                    return null
+                  })
+                )}
+              </div>
+            </div>
+            <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-accent" />
+                <span>Accuracy</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-success" />
+                <span>Correct Answer</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-error" />
+                <span>Incorrect Answer</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Reward Accumulation Line Graph */}
+          <div>
+            <h4 className="text-sm font-medium mb-3 text-muted-foreground">Reward Accumulation</h4>
+            <div className="relative h-64 bg-muted/30 rounded-lg">
+              {/* Y-axis labels - positioned with proper spacing */}
+              <div className="absolute left-2 top-4 bottom-12 flex flex-col justify-between text-xs text-muted-foreground w-10">
+                <span className="text-right">{maxReward.toFixed(1)}</span>
+                <span className="text-right">{((maxReward - minReward) * 0.75 + minReward).toFixed(1)}</span>
+                <span className="text-right">{((maxReward - minReward) * 0.5 + minReward).toFixed(1)}</span>
+                <span className="text-right">{((maxReward - minReward) * 0.25 + minReward).toFixed(1)}</span>
+                <span className="text-right">{minReward.toFixed(1)}</span>
+              </div>
+              
+              {/* Graph area with padding */}
+              <div className="ml-12 mr-4 mt-4 mb-10 h-[calc(100%-3.5rem)]">
+                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" className="overflow-visible">
+                  {/* Grid lines */}
+                  {[0, 1, 2, 3, 4].map((y) => {
+                    const yPos = (y / 4) * 100
+                    return (
+                      <line
+                        key={y}
+                        x1="0"
+                        y1={100 - yPos}
+                        x2="100"
+                        y2={100 - yPos}
+                        stroke="currentColor"
+                        strokeWidth="0.3"
+                        opacity="0.2"
+                      />
+                    )
+                  })}
+                  
+                  {/* Reward line */}
+                  {progressData.length > 0 && maxReward > minReward && (
+                    <polyline
+                      points={progressData.map((p: any, i: number) => {
+                        const x = progressData.length > 1 ? (i / (progressData.length - 1)) * 100 : 50
+                        const rewardPercent = ((p.cumulativeReward - minReward) / (maxReward - minReward)) * 100
+                        const y = 100 - rewardPercent
+                        return `${x},${y}`
+                      }).join(' ')}
+                      fill="none"
+                      stroke="rgb(234, 179, 8)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
+                  
+                  {/* Data points with reward indicators */}
+                  {progressData.map((p: any, i: number) => {
+                    const x = progressData.length > 1 ? (i / (progressData.length - 1)) * 100 : 50
+                    const rewardPercent = maxReward > minReward ? ((p.cumulativeReward - minReward) / (maxReward - minReward)) * 100 : 50
+                    const y = 100 - rewardPercent
+                    return (
+                      <g key={i}>
+                        <circle
+                          cx={x}
+                          cy={y}
+                          r="3"
+                          fill={p.reward > 0 ? "rgb(34, 197, 94)" : "rgb(239, 68, 68)"}
+                          stroke="white"
+                          strokeWidth="1.5"
+                        />
+                        {/* Reward value label */}
+                        <text
+                          x={x}
+                          y={y}
+                          dy="-10"
+                          textAnchor="middle"
+                          fontSize="9"
+                          fontWeight="500"
+                          fill="currentColor"
+                          className="fill-foreground"
+                        >
+                          {p.reward > 0 ? '+' : ''}{p.reward.toFixed(1)}
+                        </text>
+                      </g>
+                    )
+                  })}
+                </svg>
+              </div>
+              
+              {/* X-axis labels - properly aligned */}
+              <div className="absolute bottom-2 left-12 right-4 flex justify-between text-xs text-muted-foreground">
+                {progressData.length <= 10 ? (
+                  progressData.map((p: any, i: number) => (
+                    <span key={i} className="text-center" style={{ width: `${100 / progressData.length}%` }}>
+                      Q{p.question}
+                    </span>
+                  ))
+                ) : (
+                  progressData.map((p: any, i: number) => {
+                    const step = Math.ceil(progressData.length / 5)
+                    if (i === 0 || i === progressData.length - 1 || i % step === 0) {
+                      return (
+                        <span key={i} className="text-center">
+                          Q{p.question}
+                        </span>
+                      )
+                    }
+                    return null
+                  })
+                )}
+              </div>
+            </div>
+            <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-amber-500" />
+                <span>Total Reward</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-success" />
+                <span>Positive Reward</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-3 h-3 rounded-full bg-error" />
+                <span>Negative Reward</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Performance Summary Stats */}
+          <div className="mt-6 pt-6 border-t border-border">
+            <h4 className="text-sm font-medium mb-3">Performance Insights</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-3 rounded-lg bg-muted/50">
+                <p className="text-2xl font-bold text-accent">{progressData[progressData.length - 1]?.accuracy.toFixed(1) || 0}%</p>
+                <p className="text-xs text-muted-foreground mt-1">Final Accuracy</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-muted/50">
+                <p className="text-2xl font-bold text-amber-500">{totalReward.toFixed(1)}</p>
+                <p className="text-xs text-muted-foreground mt-1">Total Reward</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-muted/50">
+                <p className="text-2xl font-bold text-success">
+                  {progressData.filter((p: any) => p.isCorrect).length}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">Correct Streak</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-muted/50">
+                <p className="text-2xl font-bold capitalize text-accent">{performanceTrend}</p>
+                <p className="text-xs text-muted-foreground mt-1">Trend</p>
+              </div>
+            </div>
           </div>
         </div>
 
